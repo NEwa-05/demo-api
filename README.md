@@ -14,7 +14,9 @@ And finally improve application or deployment with any idea that comes to mind i
 
 # Create Clusters
 
+Using terraform through Scaleway
 
+One cluster is in the Paris Region the other in Amsterdam.
 
 ## create cluster on GKE
 
