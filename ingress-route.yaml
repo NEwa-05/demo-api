@@ -1,0 +1,15 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: foobar-api-iro
+spec:
+  entryPoints: 
+    - websecure
+  tls:
+    passthrough: true
+  routes:
+  - match: HostSNI(`api.mageekbox.eu`)
+    services:
+    - name: foobar-api-svc
+      port: 80
