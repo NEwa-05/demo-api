@@ -20,8 +20,9 @@ jobs:
         command: create ns traefik
         
     - name: deploy traefik via helm to kube paris
-      uses: 'deliverybot/helm3@v1'
+      uses: 'deliverybot/helm@v1'
       with:
+        helm: helm3
         repository: 'https://helm.traefik.io/traefik'
         release: traefik
         namespace: 'traefik'
@@ -30,8 +31,9 @@ jobs:
         KUBECONFIG_FILE: '${{ secrets.KUBE_PAR_KUBECONFIG }}'
         
     - name: deploy traefik via helm to kube amsterdam
-      uses: 'deliverybot/helm3@v1'
+      uses: 'deliverybot/helm@v1'
       with:
+        helm: helm3
         repository: 'https://helm.traefik.io/traefik'
         release: traefik
         namespace: 'traefik'
