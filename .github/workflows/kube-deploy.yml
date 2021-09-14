@@ -10,13 +10,13 @@ jobs:
     - name: create ns traefik to kube paris
       uses: steebchen/kubectl@v2.0.0
       with: # defaults to latest kubectl binary version
-        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         command: create ns traefik
         
     - name: create ns traefik to cluster amsterdam
       uses: steebchen/kubectl@v2.0.0
       with: # defaults to latest kubectl binary version
-        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         command: create ns traefik
         
     - name: deploy traefik via helm to kube paris
@@ -40,7 +40,7 @@ jobs:
     - name: deploy secret to kube paris
       uses: steebchen/kubectl@v2.0.0
       with:
-        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         version: v1.21.0
         command: create secret generic machinersa --from-literal=machine-rsa=${{ secrets.SSH_MACHINE_RSA }}
         
@@ -48,34 +48,34 @@ jobs:
     - name: deploy secret to kube amsterdam
       uses: steebchen/kubectl@v2.0.0
       with:
-        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         version: v1.21.0
         command: create secret generic machinersa --from-literal=machine-rsa=${{ secrets.SSH_MACHINE_RSA }}
         
     - name: deploy to kube paris
       uses: steebchen/kubectl@v2.0.0
       with:
-        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         version: v1.21.0
         command: apply --record -f kube/
         
     - name: verify deployment paris
       uses: steebchen/kubectl@v2.0.0
       with:
-        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         version: v1.21.0
         command: rollout status foobar-api-dep
         
     - name: deploy to kube amsterdam
       uses: steebchen/kubectl@v2.0.0
       with:
-        config: ${{ secrets.KUBE_AMS_KUBECONFIG }}
+        config: ${{ secrets.KUBE_AMS_KUBECONFIG_BASE64 }}
         version: v1.21.0
         command: apply --record -f kube/
         
     - name: verify deployment amsterdam
       uses: steebchen/kubectl@v2.0.0
       with:
-        config: ${{ secrets.KUBE_AMS_KUBECONFIG }}
+        config: ${{ secrets.KUBE_AMS_KUBECONFIG_BASE64 }}
         version: v1.21.0
         command: rollout status foobar-api-dep
