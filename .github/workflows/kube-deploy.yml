@@ -48,7 +48,6 @@ jobs:
         version: v1.21.0
         command: create secret generic machinersa --from-literal=machine-rsa="${{ secrets.SSH_MACHINE_RSA }}"
         
-        
     - name: deploy secret to kube amsterdam
       uses: steebchen/kubectl@v2.0.0
       with:
@@ -68,7 +67,7 @@ jobs:
       with:
         config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         version: v1.21.0
-        command: rollout status foobar-api-dep
+        command: rollout status deployment foobar-api-dep
         
     - name: deploy to kube amsterdam
       uses: steebchen/kubectl@v2.0.0
@@ -82,4 +81,4 @@ jobs:
       with:
         config: ${{ secrets.KUBE_AMS_KUBECONFIG_BASE64 }}
         version: v1.21.0
-        command: rollout status foobar-api-dep
+        command: rollout status deployment foobar-api-dep
