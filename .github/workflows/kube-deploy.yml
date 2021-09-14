@@ -9,19 +9,20 @@ jobs:
     
     - name: create ns traefik to kube paris
       uses: steebchen/kubectl@v2.0.0
-      with: # defaults to latest kubectl binary version
+      with:
         config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         command: create ns traefik
         
     - name: create ns traefik to cluster amsterdam
       uses: steebchen/kubectl@v2.0.0
-      with: # defaults to latest kubectl binary version
+      with:
         config: ${{ secrets.KUBE_AMS_KUBECONFIG_BASE64 }}
         command: create ns traefik
         
     - name: deploy traefik via helm to kube paris
-      uses: 'deliverybot/helm@v1'
+      uses: 'deliverybot/helm3@v1'
       with:
+        repository: 'https://helm.traefik.io/traefik'
         release: traefik
         namespace: 'traefik'
         chart: 'traefik'
@@ -29,8 +30,9 @@ jobs:
         KUBECONFIG_FILE: '${{ secrets.KUBE_PAR_KUBECONFIG }}'
         
     - name: deploy traefik via helm to kube amsterdam
-      uses: 'deliverybot/helm@v1'
+      uses: 'deliverybot/helm3@v1'
       with:
+        repository: 'https://helm.traefik.io/traefik'
         release: traefik
         namespace: 'traefik'
         chart: 'traefik'
