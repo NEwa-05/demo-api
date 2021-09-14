@@ -34,7 +34,7 @@ jobs:
         namespace: 'datadog'
         chart: 'datadog'
         values: |
-          datadog.site: 'datadoghq.eu'
+          datadog.site: 'datadoghq.eu',
           datadog.apiKey: '${{ secrets.DATADOG_APIKEY }}'
         value-files: ./ddvalues.yaml
       env:
@@ -50,7 +50,7 @@ jobs:
         chart: 'datadog'
         values: |
           datadog.site: 'datadoghq.eu'
-          datadog.apiKey: '${{ secrets.DATADOG_APIKEY }}'
+          datadog.apiKey: ${{ secrets.DATADOG_APIKEY }}
         value-files: ./ddvalues.yaml
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBE_AMS_KUBECONFIG }}'    
