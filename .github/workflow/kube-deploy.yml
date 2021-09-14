@@ -1,0 +1,81 @@
+on: push
+name: deploy-to-kube
+jobs:
+  deploy:
+    name: deploy to kube
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - name: create ns to kube paris
+      uses: steebchen/kubectl@v2.0.0
+      with: # defaults to latest kubectl binary version
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        command: create ns traefik datadog
+        
+    - name: create ns to cluster amsterdam
+      uses: steebchen/kubectl@v2.0.0
+      with: # defaults to latest kubectl binary version
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        command: create ns traefik datadog
+        
+    - name: deploy traefik via helm to kube paris
+      uses: 'deliverybot/helm@v1'
+      with:
+        release: traefik
+        namespace: 'traefik'
+        chart: 'traefik'
+      env:
+        KUBECONFIG_FILE: '${{ secrets.KUBE_PAR_KUBECONFIG }}'
+        
+    - name: deploy traefik via helm to kube amsterdam
+      uses: 'deliverybot/helm@v1'
+      with:
+        release: traefik
+        namespace: 'traefik'
+        chart: 'traefik'
+      env:
+        KUBECONFIG_FILE: '${{ secrets.KUBE_AMS_KUBECONFIG }}'    
+        
+    - name: deploy secret to kube paris
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        version: v1.21.0
+        command: create secret generic machinersa --from-literal=machine-rsa=${{ secrets.SSH_MACHINE_RSA }}
+        
+        
+    - name: deploy secret to kube amsterdam
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        version: v1.21.0
+        command: create secret generic machinersa --from-literal=machine-rsa=${{ secrets.SSH_MACHINE_RSA }}
+        
+    - name: deploy to kube paris
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        version: v1.21.0
+        command: apply --record -f kube/
+        
+    - name: verify deployment paris
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG }}
+        version: v1.21.0
+        command: rollout status foobar-api-dep
+        
+    - name: deploy to kube amsterdam
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_AMS_KUBECONFIG }}
+        version: v1.21.0
+        command: apply --record -f kube/
+        
+    - name: verify deployment amsterdam
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_AMS_KUBECONFIG }}
+        version: v1.21.0
+        command: rollout status foobar-api-dep
