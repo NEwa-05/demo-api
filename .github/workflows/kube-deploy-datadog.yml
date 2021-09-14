@@ -1,0 +1,63 @@
+on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+name: deploy-datadog-to-kube
+jobs:
+  deploy:
+    name: deploy datadog to kube
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - name: create ns datadog to kube paris
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
+        command: create ns datadog
+        
+    - name: create ns datadog to cluster amsterdam
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_AMS_KUBECONFIG_BASE64 }}
+        command: create ns datadog
+        
+    - name: deploy datadog via helm to kube paris
+      uses: 'deliverybot/helm@v1'
+      with:
+        helm: helm3
+        repository: 'https://helm.datadoghq.com'
+        release: datadog
+        namespace: 'datadog'
+        chart: 'datadog'
+        values: |
+          datadog.site: 'datadoghq.eu'
+          datadog.apiKey: '${{ secrets.DATADOG_APIKEY }}'
+        value-files: >-
+        [
+          "ddvalues.yaml"
+        ]
+      env:
+        KUBECONFIG_FILE: '${{ secrets.KUBE_PAR_KUBECONFIG }}'
+        
+    - name: deploy datadog via helm to kube amsterdam
+      uses: 'deliverybot/helm@v1'
+      with:
+        helm: helm3
+        repository: 'https://helm.datadoghq.com'
+        release: datadog
+        namespace: 'datadog'
+        chart: 'datadog'
+        values: |
+          datadog.site: 'datadoghq.eu'
+          datadog.apiKey: '${{ secrets.DATADOG_APIKEY }}'
+        value-files: >-
+        [
+          "ddvalues.yaml"
+        ]
+      env:
+        KUBECONFIG_FILE: '${{ secrets.KUBE_AMS_KUBECONFIG }}'    
+        
