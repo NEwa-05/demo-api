@@ -34,7 +34,7 @@ jobs:
         namespace: 'datadog'
         chart: 'datadog'
         values: |
-          datadog.site: 'datadoghq.eu',
+          datadog.site: 'datadoghq.eu'
           datadog.apiKey: '${{ secrets.DATADOG_APIKEY }}'
         value-files: ./ddvalues.yaml
       env:
