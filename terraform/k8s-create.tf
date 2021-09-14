@@ -17,16 +17,16 @@ resource "scaleway_k8s_pool" "kube-par" {
   autohealing = false
 }
 
-resource "scaleway_k8s_cluster" "kube_ams" {
-  name    = "kube_ams"
+resource "scaleway_k8s_cluster" "kube-ams" {
+  name    = "kube-ams"
   region = "nl-ams"
   version = "1.22.1"
   cni     = "cilium"
   description = "K8s cluster Region Amsterdam"
 }
 
-resource "scaleway_k8s_pool" "kube_ams" {
-  cluster_id  = scaleway_k8s_cluster.kube_ams.id
+resource "scaleway_k8s_pool" "kube-ams" {
+  cluster_id  = scaleway_k8s_cluster.kube-ams.id
   name        = "default"
   region = "nl-ams"
   zone = "nl-ams-1"
@@ -41,7 +41,7 @@ resource "local_file" "kubeconfig-kube-par" {
   filename = "${path.module}/kubeconfig-kube-par"
 }
 
-resource "local_file" "kubeconfig-kube_ams" {
-  content = scaleway_k8s_cluster.kube_ams.kubeconfig[0].config_file
-  filename = "${path.module}/kubeconfig-kube_ams"
+resource "local_file" "kubeconfig-kube-ams" {
+  content = scaleway_k8s_cluster.kube-ams.kubeconfig[0].config_file
+  filename = "${path.module}/kubeconfig-kube-ams"
 }
