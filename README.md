@@ -2,7 +2,7 @@
 
 ## Purpose of this repository
 
-This repository contains a dockerfile, a terraform recipe, K8s yamls, github actions workflow and documentation to deploy [foobar-api](git@github.com:containous/foobar-api.git)
+This repository contains a dockerfile, a terraform recipe, K8s yamls, github actions workflow and documentation to deploy [foobar-api](https://github.com/containous/foobar-api)
 
 The following api need to run on 2 separated K8s cluster load balanced.
 
