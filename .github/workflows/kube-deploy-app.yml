@@ -32,7 +32,7 @@ jobs:
       with:
         config: ${{ secrets.KUBE_PAR_KUBECONFIG_BASE64 }}
         version: v1.21.0
-        command: apply --record -f kube/
+        command: apply --record -f app/
         
     - name: verify deployment paris
       uses: steebchen/kubectl@v2.0.0
@@ -46,7 +46,7 @@ jobs:
       with:
         config: ${{ secrets.KUBE_AMS_KUBECONFIG_BASE64 }}
         version: v1.21.0
-        command: apply --record -f kube/
+        command: apply --record -f app/
         
     - name: verify deployment amsterdam
       uses: steebchen/kubectl@v2.0.0
