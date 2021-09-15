@@ -127,7 +127,7 @@ This Workflow has 2 ways to define custom values, one where you define the value
   value-files: ./traefikvalues.yaml
 ```
 
-In order to get Traefik metrics in Datadog, we need to modify the values of the deployment, a value file with the needed values has been to the repository and used in the deployment, the [values](https://github.com/NEwa-05/demo-api/blob/document/kube/traefikvalues.yaml)
+In order to get Traefik metrics in Datadog, we need to modify the values of the deployment, a value file with the needed values has been to the repository and used in the deployment, the [values](https://github.com/NEwa-05/demo-api/blob/kube/traefikvalues.yaml)
 
 ### Install Datadog via Actions
 
@@ -146,9 +146,35 @@ Datadog will need an API key to send metrics to the Remote Service, again, a Rep
 
 When the pods from datadog are deployed, it will take a few minutes to get metrics or logs in the [Datadog UI](https://app.datadoghq.eu)
 
+### foobar-api Kubernetes ressources
+
+The deployment is entirely managed via a [Github Actions workflow](https://github.com/NEwa-05/demo-api/blob/master/.github/workflows/kube-deploy-app.yml) based on the [kubectl workflow](https://github.com/steebchen/kubectl)
+
+#### PVC 
+
+First thing is the PV, since we are on clusters with cloud provider plugin, let's use it and create a [persitent volume claim](https://github.com/NEwa-05/demo-api/blob/kube/pvc.yaml) which will provision a persistent volume when we will deploy our API.
+
+#### Secret
+
+To get the certificate inside the PV which was a prerequisite, I've decided to create a private repository that will hold the certificate and it's key, the init container will then need a secret with a ssh key to get access to this repository.
+
+To create this secret in my workflow I've create again a repository secret in git, and push it my ssh key, then used it in a simple kubectl create command.
+
+#### Deployment
+
+Looking at the foobar-api since there is no problem to create multiple replicas on the same cluster, a deployment will then be a good resource to use in order to recreate our pod if someone delete the pod.
+
+The [deployment](https://github.com/NEwa-05/demo-api/blob/kube/deployment.yaml) will consist of an init container which will get the certificate and push it inside the persistent volume that will be created for the pod, and the foobar-api container image.
+
+The container foobar-api after the init container pushed the certificate in the PV will attach this same PV and use the certificate to start.
+
+In order to get the state of readiness of the foobar-api the probe will just check the tcp port 80, to get the liveness state will check the answer of an http request on the Health endpoint of the api.
+
+## 
+
 ### Install the foobar-api via Actions
 
-
+based on
 
 check if url respond
 curl -vik --resolve api.mageekbox.eu:443:35.223.167.83 https://api.mageekbox.eu/api
