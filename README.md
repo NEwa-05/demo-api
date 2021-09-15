@@ -170,11 +170,45 @@ The container foobar-api after the init container pushed the certificate in the 
 
 In order to get the state of readiness of the foobar-api the probe will just check the tcp port 80, to get the liveness state will check the answer of an http request on the Health endpoint of the api.
 
-## 
+```yaml
+    readinessProbe:
+      tcpSocket:
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 80
+      initialDelaySeconds: 15
+      periodSeconds: 20
+```
 
-### Install the foobar-api via Actions
+#### Service
 
-based on
+A simple service with port 80 will do, no load balancer type service or node port, since we will use an IngressRoute.
 
-check if url respond
-curl -vik --resolve api.mageekbox.eu:443:35.223.167.83 https://api.mageekbox.eu/api
+#### IngressRoute
+
+This was one tricky part, on my first try I created a ingress with 2 annotations to specify the entrypoint 443 (websecure), but not to use TLS, since the certificate is hold by the application directly
+
+```yaml
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    traefik.ingress.kubernetes.io/router.tls: "false"
+```
+
+But it doesn't work, after some test I checked capabilities from the IngressRoute resources and find out I could declare to use Pathtrough TLS after creating the resources, when I try to connect to foobar-api it answer me with the certificate I've created.
+
+Jobs done for the IngressRoute, will keep it.
+
+## Load Balancing
+
+As stated before the load balancing for this application will be done via DNS Round Robin.
+
+To do so, creating 2 A entries on the DNS serving the same name but with both "Ingress controler" external IP will work like a charm.
+
+This implementation of load balancing will imply downside, like no answer 1 out of 2 request if one cluster is not accessible, but with some validation around Cloudflare Global load balancing or even GCP global load balancing it could be more efficient and resilient.
+
+## Improvement
+
+This project was put in place in a short time period, but with the coordination with Devs and Devops teams, it could be more secure, more automated, more resilient, and implement new features in a more efficient way.
