@@ -197,9 +197,9 @@ This was one tricky part, on my first try I created a ingress with 2 annotations
     traefik.ingress.kubernetes.io/router.tls: "false"
 ```
 
-But it doesn't work, after some test I checked capabilities from the IngressRoute resources and find out I could declare to use Pathtrough TLS after creating the resources, when I try to connect to foobar-api it answer me with the certificate I've created.
+But it doesn't work, the certificate is still the Traefik one, after some test I checked capabilities from the IngressRoute resources and find out I could declare to use Pathtrough TLS after creating the resources, when I try to connect to foobar-api it answer me with the certificate I've created.
 
-Jobs done for the IngressRoute, will keep it.
+Jobs done for the IngressRoute with ingress, will keep it.
 
 ## Load Balancing
 
