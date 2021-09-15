@@ -32,9 +32,44 @@ Terraform was a choice of experience to lower time consumption when recreating t
 
 To deploy the foobar-api inside my Kubernetes cluster, I choose to create myself the OCI image (tools like Kaniko or buildpack could have been used).
 
-The creation of the Docker file was pretty symple, looking at the Makefile to get each 
+The creation of the Docker file was pretty symple, looking at the Makefile to get the build command.
 
-# Create Clusters
+The Image file is a multistage build in order to get the simplest image with the lowest attack surface.
+
+First stage from golang image git clone foobar-api repository, build the binary.
+
+Second stage from scrath, get binary from previous build and set the binary to start with the image when running.
+
+Then a simple docker push to get it in my docker hub account.
+
+File described here is: [text](https://github.com/NEwa-05/demo-api/blob/master/Dockerfile)
+
+### automatically
+
+Looking to create the OCI image the more efficiently possible, I turn myself to Github Actions since all my work will be on it, tools like argoCD or else could have been used if the request to keep build inside a internal network have been needed)
+
+For this part I used workflow example from internet to create the image, you could see the file here: [text](https://github.com/NEwa-05/demo-api/blob/master/.github/workflows/create-oci.yml)
+
+The process here is simple, create a build image, then get the Dockerfile from the repository and build the foobar-api image.
+
+At first I did kept the push and pull request at build, but each time I did pushed modification to another file or folder of the repository the image was rebuild.
+
+I didn't want to build and rebuild the image since the code will not move to much at the moment.
+
+replacing the "on" section by this did the trick:
+
+```yaml
+on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+```
+
+## Creating Clusters
+
 
 Using terraform through Scaleway
 
