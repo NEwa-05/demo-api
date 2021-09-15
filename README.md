@@ -126,15 +126,29 @@ This Workflow has 2 ways to define custom values, one where you define the value
       token: "mytoken"
   value-files: ./traefikvalues.yaml
 ```
-In order to get Traefik metrics in Datadog, we need to modify the values of the deployment, a value file with the needed values has been to the repository and used in the deployment, the [values]()
 
-## 
+In order to get Traefik metrics in Datadog, we need to modify the values of the deployment, a value file with the needed values has been to the repository and used in the deployment, the [values](https://github.com/NEwa-05/demo-api/blob/document/kube/traefikvalues.yaml)
+
+### Install Datadog via Actions
+
+The process is more or less the same as for Traefik, with some changment to the name of the resources, helm chart and values, but the workflow is the same.
+
+Datadog will need an API key to send metrics to the Remote Service, again, a Repository secret will do the trick, but this time I'll use some values outside of the repository file like this:
+
+```yaml
+  values: |
+    datadog:
+      site: 'datadoghq.eu'
+      apiKey: '${{ secrets.DATADOG_APIKEY }}'
+      clusterName: 'kube'
+   value-files: ./ddvalues.yaml
+```
+
+When the pods from datadog are deployed, it will take a few minutes to get metrics or logs in the [Datadog UI](https://app.datadoghq.eu)
+
+### Install the foobar-api via Actions
 
 
 
 check if url respond
 curl -vik --resolve api.mageekbox.eu:443:35.223.167.83 https://api.mageekbox.eu/api
-
-helm repo add datadog https://helm.datadoghq.com
-
-helm install -n datadog ddmonitoring -f ddvalues.yaml --set datadog.site='datadoghq.eu' --set datadog.apiKey='apikey' datadog/datadog 
