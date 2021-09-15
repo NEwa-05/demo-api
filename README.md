@@ -42,13 +42,13 @@ Second stage from scrath, get binary from previous build and set the binary to s
 
 Then a simple docker push to get it in my docker hub account.
 
-File described here is: [text](https://github.com/NEwa-05/demo-api/blob/master/Dockerfile)
+File described here is: [Dockerfile](https://github.com/NEwa-05/demo-api/blob/master/Dockerfile)
 
 ### automatically
 
 Looking to create the OCI image the more efficiently possible, I turn myself to Github Actions since all my work will be on it, tools like argoCD or else could have been used if the request to keep build inside a internal network have been needed)
 
-For this part I used workflow example from internet to create the image, you could see the file here: [text](https://github.com/NEwa-05/demo-api/blob/master/.github/workflows/create-oci.yml)
+For this part I used workflow example from internet to create the image, you could see the file here: [create-oci.yml](https://github.com/NEwa-05/demo-api/blob/master/.github/workflows/create-oci.yml)
 
 The process here is simple, create a build image, then get the Dockerfile from the repository and build the foobar-api image.
 
