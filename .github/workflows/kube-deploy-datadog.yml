@@ -41,6 +41,7 @@ jobs:
         value-files: ./ddvalues.yaml
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBE_PAR_KUBECONFIG }}'
+        DD_KUBELET_TLS_VERIFY: false
         
     - name: deploy datadog via helm to kube amsterdam
       uses: 'deliverybot/helm@v1'
@@ -58,4 +59,5 @@ jobs:
         value-files: ./ddvalues.yaml
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBE_AMS_KUBECONFIG }}'    
+        DD_KUBELET_TLS_VERIFY: false
         
