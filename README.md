@@ -1,16 +1,38 @@
-# Demo-api
+# Demo-api Documentation
 
-This repository contains docker files and documentation to deploy git@github.com:containous/foobar-api.git
+## Purpose of this repository
+
+This repository contains a dockerfile, a terraform recipe, K8s yamls, github actions workflow and documentation to deploy git@github.com:containous/foobar-api.git
 
 The following api need to run on 2 separated K8s cluster load balanced.
 
-Deployment have to get its certificate from a pvc.
+Deployment have to get its certificate inside a persistent volume.
 
-Pod should be probed for readiness and liveness.
+Container should be probed for readiness and liveness.
 
 Clusters and application needs to be monitored.
 
-And finally improve application or deployment with any idea that comes to mind in order to get it more robust or secure.
+And finally improve the application or its deployment with any idea that comes to mind in order to get it more robust, secure or easy to deploy and used by anyone.
+
+## Choice of the Implementation
+
+Following the request and some hints in the words used in it, I choose to deploy the foobar-api inside a Kubernetes cluster.
+
+The Scaleway option concerning the platform underlying infrastructure was a choice of simplicity and costs.
+
+After looking around some documentation to implement google Global load balancing and taking the constraint of time in account, I choose to simply use a round robin DNS to load balance trafic between both clusters/applications.
+
+The use of Github Actions to create automated workflow was an occasion to discover it with a real use case.
+
+Terraform was a choice of experience to lower time consumption when recreating the platform.
+
+## Create OCI image
+
+### Manually
+
+To deploy the foobar-api inside my Kubernetes cluster, I choose to create myself the OCI image (tools like Kaniko or buildpack could have been used).
+
+The creation of the Docker file was pretty symple, looking at the Makefile to get each 
 
 # Create Clusters
 
