@@ -38,7 +38,7 @@ jobs:
             site: 'datadoghq.eu'
             apiKey: '${{ secrets.DATADOG_APIKEY }}'
             clusterName: 'kube-par'
-        value-files: ./ddvalues.yaml
+        value-files: kube/ddvalues.yaml
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBE_PAR_KUBECONFIG }}'
         DD_KUBELET_TLS_VERIFY: false
@@ -56,7 +56,7 @@ jobs:
             site: 'datadoghq.eu'
             apiKey: '${{ secrets.DATADOG_APIKEY }}'
             clusterName: 'kube-ams'
-        value-files: ./ddvalues.yaml
+        value-files: kube/ddvalues.yaml
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBE_AMS_KUBECONFIG }}'    
         DD_KUBELET_TLS_VERIFY: false
