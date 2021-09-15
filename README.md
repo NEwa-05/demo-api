@@ -68,11 +68,15 @@ on:
         default: 'warning'
 ```
 
+Inside this workflow or others it could be needed to specify secrets, like token or password, to pass this secrets as secure as possible without putting them in the code, the secrets could be created in the settings of the repository.
+
 ## Creating Clusters
 
+### Manually
 
-Using terraform through Scaleway
+As most of Cloud provider it's simple as a click to create a cluster on the Scaleway WebUI.
 
+When the cluster is ready, a simple download of the kubeconfig from the cluster is possible 
 One cluster is in the Paris Region the other in Amsterdam.
 
 ## create cluster on GKE
