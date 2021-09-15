@@ -28,6 +28,17 @@ spec:
           ports:
             - containerPort: 80
               name: "whoami"
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
           volumeMounts:
             - mountPath: "/cert/"
               name: foobar-api-vol

@@ -187,13 +187,13 @@ logs:
           # Content-Type: keep
 
 metrics:
-  # datadog:
-  #   address: 127.0.0.1:8125
+  datadog:
+     address: 127.0.0.1:8125
   # influxdb:
   #   address: localhost:8089
   #   protocol: udp
-  prometheus:
-    entryPoint: metrics
+  #prometheus:
+  #  entryPoint: metrics
   # statsd:
   #   address: localhost:8125
 
