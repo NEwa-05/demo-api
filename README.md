@@ -79,55 +79,58 @@ As most of Cloud provider it's simple as a click to create a cluster on the Scal
 When the cluster is ready, a simple download of the kubeconfig from the cluster is possible 
 One cluster is in the Paris Region the other in Amsterdam.
 
-## create cluster on GKE
+Easy as that, the cluster has cloud provider capabilities so if you need a service load balancer or a persistent volume you'll get it when you creat the resource.
 
->> GCP add the possibility to load balance through several region
+### Automatically
 
-create a cluster on europe-west1-b
+For this kind of infrastructure with the deadline I had it was way simpler to use Terraform and not try Pulumi which I've never used at the moment.
 
-create a cluster on us-central1-a
+Since I need to create 2 resources I won't create conditional resources in the TF files.
 
-create global load balancer
+Only what I need will be in the TF files, the cluster creation, the node pool creation with the size and count of nodes for the cluster, and finally the "download" of the kubeconfig to access the K8s clsters, the file that create those resources is here: [Terraform Create cluster file](https://github.com/NEwa-05/demo-api/blob/master/terraform/k8s-create.tf)
 
-create dns entry for global load balancer ip
+The only problem I faced for this terraform was to know how to pass the region/AZ to the pool or cluster resources, by checking the doc from hashicorp and made some adjustment it went smoothly on the 3 try.
 
+At the moment the cluster creation is not automated in a github Actions workflow but could be done later on.
 
-## build docker image foobar-api
+## Kubernetes
 
-### manually 
+I've decided to use Traefik Proxy as an ingress controller, in order to use in the future iterration the middleware it brings with it.
 
-create dockerfile 2 layer image
+For the monitoring, since I was looking at Datadog free demo to discover its services, it was a good opportunity to test it.
 
-from golang
+Both tools will be installed via helm and will be deployed in both cluster via Github Actions.
 
-git clone
+Concerning the Github Actions deployment of those 2 tools, I've set manually as repository secret, both kubeconfig (Looking forward to automate the secret creation when the Terraform part will be in Actions)
 
-build
+To deploy the app I use a github Actions workflow which need that kubeconfig is hashed with base64, so like for the clear kubeconfig, I've create repository secret with the base64 content of both clusters kubeconfig, here's the repository which explain the [kubectl workflow](https://github.com/steebchen/kubectl)
 
-from scratch 
+### Install traefik proxy via Actions
 
-copy built go binary
+My first action in order to install Traefik is to create a new namespace to run it.
 
+At first it was made by hand but I quickly decided to create an Actions workflow to deploy it on both cluster.
 
-### automatically 
+This workflow like the one that create the OCI image of the foobar-api, will be triggered on demand to lower the number of jobs till I am still moving stuff around on the git repository.
 
->> use skaffold
+The second part is to define via the github actions made by deliverybot [repo](https://github.com/deliverybot/helm) to manage values, but also version and release of the helm chart I need to deploy.
 
-## install traefik proxy
+My first try was unsuccessful cause I didn't verify which version of helm was used by default, so it fails with a "tiller not installed" message. 
 
+This Workflow has 2 ways to define custom values, one where you define the value files from your repository, the other one will create a value file with what you define directly in the workflow:
+
+```yaml
+  values: |
+    pilot:
+      enabled: true
+      token: "mytoken"
+  value-files: ./traefikvalues.yaml
 ```
-follow https://doc.traefik.io/traefik/getting-started/install-traefik/
-```
-
-k create ns traefik
-
-helm repo add traefik https://helm.traefik.io/traefik
-
-helm repo update
-
-helm install traefik traefik/traefik
+In order to get Traefik metrics in Datadog, we need to modify the values of the deployment, a value file with the needed values has been to the repository and used in the deployment, the [values]()
 
 ## 
+
+
 
 check if url respond
 curl -vik --resolve api.mageekbox.eu:443:35.223.167.83 https://api.mageekbox.eu/api
