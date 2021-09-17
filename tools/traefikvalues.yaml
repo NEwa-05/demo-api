@@ -15,7 +15,10 @@ deployment:
   # Number of pods of the deployment (only applies when kind == Deployment)
   replicas: 1
   # Additional deployment annotations (e.g. for jaeger-operator sidecar injection)
-  annotations: {}
+  annotations:
+    ad.datadoghq.com/traefik.check_names: '["traefik"]'
+    ad.datadoghq.com/traefik.init_configs: '[{}]'
+    ad.datadoghq.com/traefik.instances: '[{"host": "%%host%%", "port": "%%port%%", "path": "/health", "scheme": "http"}]'
   # Additional deployment labels (e.g. for filtering deployment by custom labels)
   labels: {}
   # Additional pod annotations (e.g. for mesh injection or prometheus scraping)
